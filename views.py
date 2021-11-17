@@ -10,7 +10,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 
 
 @app.post('/register')
-def register_user(request: User):
+def register_user(request: User=Depends()):
     mysql = Database_Handle()
     check_before = mysql.check_user(request.email)
     if check_before is not None:
@@ -19,3 +19,9 @@ def register_user(request: User):
     join_req = (request.email, request.nama, request.username, hash_pass, request.position_job)
     mysql.create_user(join_req)
     return {'success': 'User has been created'}
+
+# @app.get('/test')
+# async def testing():
+#     mysql = Database_Handle()
+#     check_before = mysql.seluruhdata()
+#     return check_before

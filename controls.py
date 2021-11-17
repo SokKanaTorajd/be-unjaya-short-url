@@ -48,3 +48,14 @@ class Database_Handle:
         )
         fetch = cursor.fetchone()
         return fetch
+
+    def seluruhdata(self):
+        global db, cursor 
+        self.open_db()
+        cursor.execute(
+            f"""
+                SELECT * FROM user
+            """
+        )
+        fetch = cursor.fetchall()
+        return fetch
