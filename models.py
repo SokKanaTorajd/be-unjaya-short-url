@@ -1,9 +1,14 @@
 from pydantic import BaseModel, Field
 from typing import Optional
 
-class User(BaseModel):
+class Register(BaseModel):
     email: str = Field(...)
     nama: str = Field(...)
     username: str = Field(...)
     password: str = Field(...)
     position_job: str = Field(...)
+
+class Login(BaseModel):
+    username: str = Field(...)
+    password: str = Field(...)
+    

@@ -49,13 +49,13 @@ class Database_Handle:
         fetch = cursor.fetchone()
         return fetch
 
-    def seluruhdata(self):
+    def auth_user(self, username):
         global db, cursor 
         self.open_db()
         cursor.execute(
             f"""
-                SELECT * FROM user
+                SELECT * FROM user WHERE username = '{username}'
             """
         )
-        fetch = cursor.fetchall()
+        fetch = cursor.fetchone()
         return fetch
