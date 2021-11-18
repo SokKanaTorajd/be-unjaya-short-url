@@ -8,7 +8,5 @@ class Register(BaseModel):
     password: str = Field(...)
     position_job: str = Field(...)
 
-class Login(BaseModel):
-    username: str = Field(...)
-    password: str = Field(...)
-    
+class NotUser(BaseModel):
+    url: str = Field(...)

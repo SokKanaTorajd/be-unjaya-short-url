@@ -1,13 +1,22 @@
+from typing import Optional
 from config import app 
-from fastapi import Depends, Request, Cookie, status, HTTPException
+from fastapi import Depends, Request, Cookie, HTTPException, Response
 from passlib.hash import sha256_crypt
 from datetime import * 
 from controls import Database_Handle
-from models import Register, Login
+from models import NotUser, Register
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from function import create_access_token, verify_token
 
 oauth = OAuth2PasswordBearer(tokenUrl='login_user')
+
+def get_current_user(token: str = Depends(oauth)):
+    credentials_exception = HTTPException(
+        status_code=401,
+        detail="System couldn't validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    return verify_token(token, credentials_exception)
 
 @app.post('/register')
 def register_user(request: Register = Depends()):
@@ -21,7 +30,8 @@ def register_user(request: Register = Depends()):
     return {'success': 'User has been created'}
 
 @app.post('/login')
-def login_user(request: OAuth2PasswordRequestForm = Depends()):
+def login_user(response:Response,request: OAuth2PasswordRequestForm = Depends()):
+    response.set_cookie(key='username', value=request.username)
     mysql = Database_Handle()
     check_auth = mysql.auth_user(request.username)
     if check_auth is None:
@@ -32,10 +42,8 @@ def login_user(request: OAuth2PasswordRequestForm = Depends()):
     else:
         raise HTTPException(status_code=400, detail='Incorrect Password')
 
-def get_current_user(token: str = Depends(oauth)):
-    credentials_exception = HTTPException(
-        status_code=401,
-        detail="System couldn't validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
-    return verify_token(token, credentials_exception)
+@app.post("/home")
+def read_root(request: Request, username: Optional[str] = Cookie(None), who: NotUser = Depends()):
+    if username is None:
+        return HTTPException(status_code=400, detail='Feature works after login')
+    return {'username': username}
