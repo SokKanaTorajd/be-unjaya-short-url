@@ -59,3 +59,42 @@ class Database_Handle:
         )
         fetch = cursor.fetchone()
         return fetch
+
+    def create_url(self, id, url):
+        global db, cursor 
+        self.open_db()
+        cursor.execute(
+            f"""
+                INSERT INTO url (
+                    user_id, url_before
+                ) values (
+                    '{id}', '{url}'
+                )
+            """
+        )
+        db.commit()
+        self.close_db()
+
+    def search_url(self, url, mine):
+        global db, cursor
+        self.open_db()
+        cursor.execute(f"""
+            SELECT * FROM url WHERE url_before = '{url}' AND user_id = '{mine}'
+        """)
+        fetch = cursor.fetchone()
+        return fetch
+
+    def create_shorten(self, data):
+        global db, cursor 
+        self.open_db()
+        cursor.execute(
+            f"""
+                INSERT INTO url_detail (
+                    url_id, url_shortened, created_at, click_on
+                ) values (
+                    '{data[0]}', '{data[1]}', '{data[2]}', '{data[3]}'
+                )
+            """
+        )
+        db.commit()
+        self.close_db()
