@@ -48,20 +48,37 @@ def homepage(request: Request, username: Optional[str] = Cookie(None), url: str 
     if username is None:
         return HTTPException(status_code=400, detail='Feature works after login')
 
-    db = Database_Handle()
-    
-    usr_check = db.auth_user(username)
-    db.create_url(usr_check['id'], url)
-
-    check_url = db.search_url(url, usr_check['id'])
-    
     client_host = request.client.host
     shortCode = ShortUUID().random(length = 8)
     shorter_url = client_host + '/' + shortCode
 
+    db = Database_Handle()
+    sure_user = db.auth_user(username)
+    sure_url = db.search_url(url, sure_user['id'])
+    if sure_url is None:
+        data = (sure_user['id'], url, shortCode, datetime.now(), 0)
+        db.create_url(data)
+        return {'success': 'URL shorten has created', 'shorten': shorter_url}
+    else:
+        data = (sure_url['id'], shortCode, datetime.now(), 0)
+        db.update_url(data)
+        return {'success': 'URL shorten has updated', 'shorten': shorter_url}
 
-    data = (check_url['id'], shorter_url, datetime.now(), 1)
+@app.get('/show_url')
+def show_url(request:Request, username: Optional[str] = Cookie(None)):
+    db = Database_Handle()
+    sure_user = db.auth_user(username)
+    sure_url = db.URL(sure_user['id'])
+    provide = []
+    if sure_user is None:
+        return HTTPException(status_code=400, detail="Shorten URL didn't created yet")
+    else:
+        for i in range(len(sure_url)):
+            client_host = request.client.host 
+            sure_url[i]['url_shorten'] =  client_host + '/' + sure_url[i]['url_shorten']
+            sure_url[i]['new_url'] = client_host + '/' + sure_url[i]['new_url']
+            provide.append(sure_url[i])
+        return {'result': provide}
+            
 
-    db.create_shorten(data)
 
-    return {'success': 'URL shorten has created', 'username': username}

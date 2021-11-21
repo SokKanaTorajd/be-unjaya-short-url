@@ -19,13 +19,16 @@ class URL(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(Integer, ForeignKey('user.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
     url_before = Column(String(255), nullable=False)
+    url_shorten = Column(String(255), nullable=False)
+    created_at = Column(Date, default=datetime.now())
+    click_on = Column(Integer, nullable=True)
     url_detail = relationship('Detail', backref='new_shorten')
 
 class Detail(Base):
-    __tablename__ = 'url_detail'
+    __tablename__ = 'url_update'
     id = Column(Integer, primary_key=True, autoincrement=True)
     url_id = Column(Integer, ForeignKey('url.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
-    url_shortened = Column(String(255), nullable=False)
+    new_url = Column(String(255), nullable=False)
     created_at = Column(Date, default=datetime.now())
     click_on = Column(Integer, nullable=True)
 

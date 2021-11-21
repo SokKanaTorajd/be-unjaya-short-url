@@ -60,37 +60,38 @@ class Database_Handle:
         fetch = cursor.fetchone()
         return fetch
 
-    def create_url(self, id, url):
+    def create_url(self, data):
         global db, cursor 
         self.open_db()
         cursor.execute(
             f"""
                 INSERT INTO url (
-                    user_id, url_before
+                    user_id, url_before, url_shorten, created_at, click_on
                 ) values (
-                    '{id}', '{url}'
+                    '{data[0]}', '{data[1]}', '{data[2]}', '{data[3]}', '{data[4]}'
                 )
             """
         )
         db.commit()
         self.close_db()
 
-    def search_url(self, url, mine):
-        global db, cursor
+    def search_url(self, url, id):
+        global db, cursor 
         self.open_db()
         cursor.execute(f"""
-            SELECT * FROM url WHERE url_before = '{url}' AND user_id = '{mine}'
+            SELECT * FROM url WHERE user_id='{id}' AND url_before='{url}'
         """)
         fetch = cursor.fetchone()
         return fetch
 
-    def create_shorten(self, data):
+    
+    def update_url(self, data):
         global db, cursor 
         self.open_db()
         cursor.execute(
             f"""
-                INSERT INTO url_detail (
-                    url_id, url_shortened, created_at, click_on
+                INSERT INTO url_update (
+                    url_id, new_url, created_at, click_on
                 ) values (
                     '{data[0]}', '{data[1]}', '{data[2]}', '{data[3]}'
                 )
@@ -98,3 +99,16 @@ class Database_Handle:
         )
         db.commit()
         self.close_db()
+
+    def URL(self, user_id):
+        global db, cursor
+        self.open_db()
+        cursor.execute(f"""
+            SELECT 
+                b.url_shorten, b.created_at, b.click_on,
+                n.new_url, n.created_at, n.click_on
+            FROM url b, url_update n
+            WHERE b.user_id='{user_id}' AND n.url_id = b.id
+        """)
+        fetch = cursor.fetchall()
+        return fetch
