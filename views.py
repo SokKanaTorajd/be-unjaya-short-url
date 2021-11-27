@@ -1,6 +1,6 @@
 from typing import Optional
 from config import app 
-from fastapi import Depends, Request, Cookie, HTTPException, Response, Form
+from fastapi import Depends, Request, Cookie, HTTPException, Response
 from passlib.hash import sha256_crypt
 from datetime import * 
 from controls import Database_Handle
@@ -8,6 +8,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from function import create_access_token, verify_token
 from shortuuid import ShortUUID
 from datetime import *
+from models import User, URL
 
 oauth = OAuth2PasswordBearer(tokenUrl='login_user')
 
@@ -20,13 +21,13 @@ def get_current_user(token: str = Depends(oauth)):
     return verify_token(token, credentials_exception)
 
 @app.post('/register')
-def register_user(username: str = Form(...), email: str = Form(...), nama: str = Form(...), password: str = Form(...), position_job : str = Form(...)):
+def register_user(user: User):
     mysql = Database_Handle()
-    check_before = mysql.check_user(email)
+    check_before = mysql.check_user(user.email)
     if check_before is not None:
         raise HTTPException(status_code=400, detail='Email has been used')
-    hash_pass = sha256_crypt.hash(password)
-    join_req = (email, nama, username, hash_pass, position_job)
+    hash_pass = sha256_crypt.hash(user.password)
+    join_req = (user.email, user.nama, user.username, hash_pass, user.position_job)
     mysql.create_user(join_req)
     return {'success': 'User has been created'}
 
@@ -44,7 +45,7 @@ def login_user(response:Response,request: OAuth2PasswordRequestForm = Depends())
         raise HTTPException(status_code=400, detail='Incorrect Password')
 
 @app.post("/home")
-def homepage(request: Request, username: Optional[str] = Cookie(None), url: str = Form(...)):
+def homepage(request: Request, url: URL,  username: Optional[str] = Cookie(None)):
     if username is None:
         return HTTPException(status_code=400, detail='Feature works after login')
 
@@ -54,9 +55,9 @@ def homepage(request: Request, username: Optional[str] = Cookie(None), url: str 
 
     db = Database_Handle()
     sure_user = db.auth_user(username)
-    sure_url = db.search_url(url, sure_user['id'])
+    sure_url = db.search_url(url.url_before, sure_user['id'])
     if sure_url is None:
-        data = (sure_user['id'], url, shortCode, datetime.now(), 0)
+        data = (sure_user['id'], url.url_before, shortCode, datetime.now(), 0)
         db.create_url(data)
         return {'success': 'URL shorten has created', 'shorten': shorter_url}
     else:
