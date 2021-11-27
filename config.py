@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from fastapi.middleware.cors import CORSMiddleware
-from function import Settings
+from models import Settings
 
 #root
 app = FastAPI()

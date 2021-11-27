@@ -1,6 +1,6 @@
 import jwt
 from datetime import *
-from base import Settings
+from models import Settings
 
 settings = Settings()
 
