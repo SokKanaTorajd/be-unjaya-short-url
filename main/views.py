@@ -1,20 +1,16 @@
 from typing import Optional
 from starlette.responses import RedirectResponse
-from config import app 
-<<<<<<< HEAD
 from fastapi import Depends, Request, Cookie, HTTPException, Response
-=======
 from pydantic import Field
-from fastapi import Depends, Request, Cookie, HTTPException, Response, Form
->>>>>>> 6d487e82658956a3aca01e15e753dca67cdd6a41
+from fastapi import Depends, Request, Cookie, HTTPException, Response
 from passlib.hash import sha256_crypt
 from datetime import * 
-from controls import Database_Handle
+from db import Database_Handle
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from function import create_access_token, verify_token
+from configuration import create_access_token, verify_token, app
 from shortuuid import ShortUUID
 from datetime import *
-from models import User, URL
+from db import User, URL
 
 oauth = OAuth2PasswordBearer(tokenUrl='login_user')
 
@@ -109,3 +105,8 @@ def redirect_url(request:Request, url_shorten: str = Field):
     if db_au is not None:
         data.update_click_au(db_au['click_on'] + 1, url_shorten)
         return RedirectResponse(url=db_au['url_before'], status_code=302)
+
+@app.post('/logout')
+def logout(response:Response):
+    response.delete_cookie(key='username')
+    return {'status': 'success', 'message': 'You has logout'}

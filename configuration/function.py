@@ -1,8 +1,6 @@
 import jwt
 from datetime import *
-from models import Settings
-
-settings = Settings()
+from configuration import settings
 
 def create_access_token(data: dict):
     to_copy = data.copy()
