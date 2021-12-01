@@ -107,10 +107,8 @@ class Database_Handle:
             SELECT 
                 b.url_shorten as first_shorten, b.created_at as date_first, b.click_on as click_on_first_short,
                 n.new_url as update_short, n.created_at as date_update, n.click_on as click_on_update_short
-            FROM url b
-            INNER JOIN  url_update n ON n.url_id = b.id 
-            INNER JOIN user u ON u.id = {user_id}
-            ORDER BY date_first, date_update DESC;
+            FROM url b, url_update n, user u
+            WHERE u.id = b.user_id AND b.user_id = {user_id} AND n.url_id = b.id
         """)
         fetch = cursor.fetchall()
         return fetch

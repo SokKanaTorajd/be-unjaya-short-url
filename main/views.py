@@ -23,7 +23,7 @@ def get_current_user(token: str = Depends(oauth)):
     return verify_token(token, credentials_exception)
 
 @app.post('/register')
-def register_user(user: User):
+def register_user(user: User = Depends()):
     mysql = Database_Handle()
     check_before = mysql.check_user(user.email)
     if check_before is not None:
@@ -42,14 +42,14 @@ def login_user(response:Response,request: OAuth2PasswordRequestForm = Depends())
         raise HTTPException(status_code=400, detail='Incorrect Username')
     access_token = create_access_token(data={'sub': check_auth['username']})
     if sha256_crypt.verify(request.password, check_auth['password']):
-        return {'access_token': access_token, 'token_type': 'bearer', 'message': 'Data is valid', 'status': 'success'}
+        return {'authorization': access_token, 'token_type': 'bearer', 'message': 'Data is valid', 'status': 'success'}
     else:
         raise HTTPException(status_code=400, detail='Incorrect Password')
 
 @app.post("/home")
 def homepage(request: Request, url: URL,  username: Optional[str] = Cookie(None)):
     if username is None:
-        return HTTPException(status_code=400, detail='Feature works after login')
+        return HTTPException(status_code=401, detail='Feature works after login')
 
     client_host = request.client.host
     shortCode = ShortUUID().random(length = 8)
