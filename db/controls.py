@@ -105,10 +105,52 @@ class Database_Handle:
         self.open_db()
         cursor.execute(f"""
             SELECT 
-                b.url_shorten, b.created_at, b.click_on,
-                n.new_url, n.created_at, n.click_on
-            FROM url b, url_update n
-            WHERE b.user_id='{user_id}' AND n.url_id = b.id
+                b.url_shorten as first_shorten, b.created_at as date_first, b.click_on as click_on_first_short,
+                n.new_url as update_short, n.created_at as date_update, n.click_on as click_on_update_short
+            FROM url b, url_update n, user u
+            WHERE u.id = b.user_id AND b.user_id = {user_id} AND n.url_id = b.id
         """)
         fetch = cursor.fetchall()
         return fetch
+
+    def fetch_url_bu(self, url):
+        global db, cursor
+        self.open_db()
+        cursor.execute(f"""
+            SELECT 
+                url_before, url_shorten, click_on
+            FROM url
+            WHERE url_shorten = '{url}'
+        """)
+        fetch = cursor.fetchone()
+        return fetch
+    
+    def fetch_url_au(self,url):
+        global db, cursor
+        self.open_db()
+        cursor.execute(f"""
+            SELECT 
+                n.new_url, b.url_before, n.click_on
+            FROM url b, url_update n
+            WHERE new_url = '{url}'
+        """)
+        fetch = cursor.fetchone()
+        return fetch
+
+    def update_click_bu(self, total, url):
+        global db, cursor
+        self.open_db()
+        cursor.execute(f"""
+            UPDATE url SET click_on='{total}' WHERE url_shorten = '{url}'
+        """)
+        db.commit()
+        self.close_db()
+    
+    def update_click_au(self, total, url):
+        global db, cursor
+        self.open_db()
+        cursor.execute(f"""
+            UPDATE url_update SET click_on='{total}' WHERE new_url = '{url}'
+        """)
+        db.commit()
+        self.close_db()
