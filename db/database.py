@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, Date
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.schema import ForeignKey
-from configuration import Base 
+from config import Base 
 from datetime import *
 
 class User(Base):
@@ -31,4 +31,3 @@ class Detail(Base):
     new_url = Column(String(255), nullable=False)
     created_at = Column(Date, default=datetime.now())
     click_on = Column(Integer, nullable=True)
-
