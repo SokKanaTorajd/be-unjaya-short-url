@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     EXPIRE_JWT = 25
 
 settings = Settings()
+
 #db setup
 DATABASE_URI = 'mysql+mysqlconnector://root:@localhost/shorten_url'
 engine = create_engine(DATABASE_URI)

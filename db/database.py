@@ -31,4 +31,3 @@ class Detail(Base):
     new_url = Column(String(255), nullable=False)
     created_at = Column(Date, default=datetime.now())
     click_on = Column(Integer, nullable=True)
-

@@ -42,7 +42,7 @@ def login_user(response:Response,request: OAuth2PasswordRequestForm = Depends())
         raise HTTPException(status_code=400, detail='Incorrect Username')
     access_token = create_access_token(data={'sub': check_auth['username']})
     if sha256_crypt.verify(request.password, check_auth['password']):
-        return {'authorization': access_token, 'token_type': 'bearer', 'message': 'Data is valid', 'status': 'success'}
+        return {'authorization': access_token, 'token_type': 'Bearer', 'message': 'Data is valid', 'status': 'success'}
     else:
         raise HTTPException(status_code=400, detail='Incorrect Password')
 

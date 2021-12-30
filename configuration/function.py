@@ -4,8 +4,8 @@ from configuration import settings
 
 def create_access_token(data: dict):
     to_copy = data.copy()
-    expire = str(datetime.now() + timedelta(minutes=settings.EXPIRE_JWT))
-    to_copy.update({'expire': expire})
+    expire = datetime.now() + timedelta(minutes=settings.EXPIRE_JWT)
+    to_copy.update({'expire': expire.minute})
     encode_jwt = jwt.encode(payload=to_copy, key=settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
     return encode_jwt
 
