@@ -1,6 +1,7 @@
 from datetime import *
+from tabnanny import check
 from main import app
-from models import Todo
+from models import Todo,LOGIN
 from fastapi import Depends, HTTPException
 from passlib.hash import sha256_crypt
 from controls import Handle
@@ -14,6 +15,27 @@ async def epep(usr:Todo=Depends()):
     data=(usr.username,usr.email,hashing,usr.position_job)
     db.reg(data)
     return {"message":"oke","status":200}
+
+@app.post("/login")
+async def local(usr:LOGIN=Depends()):
+    db=Handle()
+    check=db.login(usr.username)
+    if check is None:
+        raise HTTPException(status_code=400,detail="username belum terdaftar")
+    if sha256_crypt.verify(usr.password,check["password"]):
+        return {"message":"selamat anda berhasil","status":200}
+    else:
+        raise HTTPException(status_code=400,detail="password salah")
+
+
+
+
+
+
+
+
+
+
 # @app.get("/")
 # async def test():
 #     return {"nama":"moudy"}

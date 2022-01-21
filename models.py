@@ -17,4 +17,8 @@ class URL_UPDATE(BaseModel):
     created_at : str
     click_on : int
 
+class LOGIN(BaseModel):
+    username : str
+    password : str
+    
 

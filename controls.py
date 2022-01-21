@@ -35,3 +35,11 @@ class Handle:
             f"select * from user where email='{email}'"
         )
         return cursor.fetchone()
+
+    def login(self,username):
+        global db,cursor
+        self.connect()
+        cursor.execute(
+            f"select * from user where username='{username}'"
+        )
+        return cursor.fetchone()
