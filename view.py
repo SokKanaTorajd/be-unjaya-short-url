@@ -5,6 +5,26 @@ from models import Todo,LOGIN
 from fastapi import Depends, HTTPException
 from passlib.hash import sha256_crypt
 from controls import Handle
+import jwt
+from datelime import *
+
+def create_access_token(data: dict):
+    file_copy = data.copy()
+    expire = datetime.now() + timedelta (minutes=25)
+    file_copy.update({'expire': expire.minute})
+    encode_jwt = jwt.encode(playload = to_copy, key='OkeToken124342@', algorithm='HS256')
+    return encode_jwt
+
+def verify_token(token: str, credential_exception):
+    try:
+        payload = jwt.decode(playload=token, key='OkeToken124342@', algorithm='HS256')
+        username: str = payload.get("sub")
+        if username is None:
+            raise credential_execption
+    except Exception:
+    raise credential_execption
+
+
 
 @app.post("/reg")
 async def epep(usr:Todo=Depends()):
