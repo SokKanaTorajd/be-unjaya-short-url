@@ -50,10 +50,11 @@ async def epep(usr:Todo=Depends()):
 async def local(usr:LOGIN=Depends()):
     db=Handle()
     check=db.login(usr.username)
+    access_token = create_access_token(data={'sub': check['username']})
     if check is None:
         raise HTTPException(status_code=400,detail="username belum terdaftar")
     if sha256_crypt.verify(usr.password,check["password"]):
-        return {"message":"selamat anda berhasil","status":200}
+        return {"message":"selamat anda berhasil","status":200, 'auth': access_token}
     else:
         raise HTTPException(status_code=400,detail="password salah")
 
