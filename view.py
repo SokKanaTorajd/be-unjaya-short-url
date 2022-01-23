@@ -10,7 +10,7 @@ from datelime import *
 
 def create_access_token(data: dict):
     file_copy = data.copy()
-    expire = datetime.now() + timedelta (minutes=25)
+    expire = datetime.now() + timedelta(minutes=25)
     file_copy.update({'expire': expire.minute})
     encode_jwt = jwt.encode(playload = to_copy, key='OkeToken124342@', algorithm='HS256')
     return encode_jwt
