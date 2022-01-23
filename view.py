@@ -6,7 +6,7 @@ from fastapi import Depends, HTTPException
 from passlib.hash import sha256_crypt
 from controls import Handle
 import jwt
-from datelime import *
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
 def create_access_token(data: dict):
     file_copy = data.copy()
@@ -23,6 +23,16 @@ def verify_token(token: str, credential_exception):
             raise credential_execption
     except Exception:
     raise credential_execption
+    
+oauth = OAuth2PasswordBearer(tokenUrl='local')
+    
+def get_current_user(token: str = Depends(oauth)):
+credentials_exception = HTTPException(
+    status_code=401,
+    detail="System couldn't validate credentials",
+    headers={"WWW-Authenticate": "Bearer"},
+)
+return verify_token(token, credentials_exception)
 
 
 
