@@ -1,5 +1,3 @@
-from email.mime import nonmultipart
-from pickletools import decimalnl_long
 import pymysql
 
 cursor=db=None
@@ -41,5 +39,15 @@ class Handle:
         self.connect()
         cursor.execute(
             f"select * from user where username='{username}'"
+        )
+        return cursor.fetchone()
+
+    def getuser(self,email):
+        global db,cursor
+        self.connect()
+        cursor.execute(
+            f"""
+                select * from user where email='{email}'
+            """
         )
         return cursor.fetchone()

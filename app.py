@@ -1,5 +1,5 @@
 from typing import List
-from view import app
+from views import app
 from datetime import *
 import sqlalchemy
 import databases
