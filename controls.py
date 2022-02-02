@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+from email.mime import nonmultipart
+from pickletools import decimalnl_long
+>>>>>>> 9542d332129dcb8a8b264766e447b14cf5f7b54f
 import pymysql
 
 cursor=db=None
@@ -40,4 +45,8 @@ class Handle:
         cursor.execute(
             f"select * from user where username='{username}'"
         )
+<<<<<<< HEAD
         return cursor.fetchone()
+=======
+        return cursor.fetchone()
+>>>>>>> 9542d332129dcb8a8b264766e447b14cf5f7b54f

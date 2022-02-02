@@ -4,8 +4,11 @@ from configuration import settings
 from fastapi import FastAPI
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 app = FastAPI()
 =======
+=======
+>>>>>>> 9542d332129dcb8a8b264766e447b14cf5f7b54f
 app = FastAPI()
 
 def create_access_token(data: dict):
@@ -34,4 +37,7 @@ def verify_token(token: str, credential_exception):
 # @app.get('/root')
 # async def root():
 #     return {'root': 'oke'}
+<<<<<<< HEAD
 >>>>>>> 09e2aad389ace2f55dd70b0616eee9e2170655bb
+=======
+>>>>>>> 9542d332129dcb8a8b264766e447b14cf5f7b54f
