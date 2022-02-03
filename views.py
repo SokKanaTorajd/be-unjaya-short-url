@@ -1,6 +1,6 @@
 from datetime import *
 from main import app
-from models import User,User_UPDATE
+from models import User
 from fastapi import Depends, HTTPException, Cookie, Response, Request
 from passlib.hash import sha256_crypt
 from controls import Handle
