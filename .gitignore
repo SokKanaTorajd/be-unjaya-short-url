@@ -92,7 +92,11 @@ ipython_config.py
 #Pipfile.lock
 
 # PEP 582; used by e.g. github.com/David-OConnor/pyflow
+<<<<<<< HEAD
+_pypackages_/
+=======
 __pypackages__/
+>>>>>>> origin/main
 
 # Celery stuff
 celerybeat-schedule

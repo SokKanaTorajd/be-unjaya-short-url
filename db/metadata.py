@@ -1,18 +1,7 @@
-from typing import List
-<<<<<<< HEAD
-from views import app
-=======
-from view import app
->>>>>>> 9542d332129dcb8a8b264766e447b14cf5f7b54f
-from datetime import *
 import sqlalchemy
 import databases
 
-<<<<<<< HEAD
-DATABASE_URL = 'mysql+mysqlconnector://root:@localhost/shorten_db'
-=======
-DATABASE_URL = 'mysql+mysqlconnector://root:@localhost/momod'
->>>>>>> 9542d332129dcb8a8b264766e447b14cf5f7b54f
+DATABASE_URL = 'mysql+mysqlconnector://root:@localhost/db_dsc'
 
 metadata = sqlalchemy.MetaData()
 
@@ -48,4 +37,3 @@ url_update= sqlalchemy.Table(
 )
  
 engine = sqlalchemy.create_engine( DATABASE_URL)
-metadata.create_all(engine)
