@@ -25,15 +25,3 @@ starlette==0.16.0
 typing_extensions==4.0.0
 uvicorn==0.15.0
 zipp==3.6.0
-
-
-
-post => mengirim data ke server/ request ke server
-get => menampilkan data dari server/ response server
-put => update data dari atau ke server/ request ke server
-delete => hapus data dari server/ request ke server dan server meresponse
-
-
-[https://github.com/akhfzz/fast-api-tutorial/blob/master/app.py
-line 33 sampai 55
-line 1-3 jg
