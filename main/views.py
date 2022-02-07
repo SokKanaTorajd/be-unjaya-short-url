@@ -24,9 +24,9 @@ def verify_token(token: str, credential_exception):
             return {"message": "Auth berhasil"}
     except Exception:
         raise credential_exception
-    
+
 oauth = OAuth2PasswordBearer(tokenUrl='token')
-    
+
 async def get_current_user(token: str = Depends(oauth)):
     credentials_exception = HTTPException(
         status_code=401,
@@ -35,7 +35,7 @@ async def get_current_user(token: str = Depends(oauth)):
     )
     return verify_token(token, credentials_exception)
 
-@app.post("/reg")
+@app.post("/register")
 async def register(usr:User=Depends()):
     try:
         db=Handle()
@@ -48,21 +48,23 @@ async def register(usr:User=Depends()):
     except:
         return {"message": "Lengkapi form terlebih dahulu", "status": 500}
 
-@app.post("/token")
+@app.post("/login")
 async def login(response:Response, request: OAuth2PasswordRequestForm = Depends()):
     response.set_cookie(key='u-login', value=request.username)
     db=Handle()
     check=db.login(request.username)
     if check is None:
         raise HTTPException(status_code=400,detail="Username belum terdaftar")
+
     if sha256_crypt.verify(request.password, check["password"]):
         access_token = create_access_token(data={'sub': check['username']})
         return {"message":"Proses sistem","status":200, 'auth': access_token}
+        
     else:
         raise HTTPException(status_code=400,detail="Password salah")
 
-@app.post("/getuser")
-async def getuser(response:Response, request: Request):
+@app.get("/user")
+async def get_user(response:Response, request: Request):
     response.set_cookie(key='u-update', value=request.email)
     return {"message":"cookie disimpan", "status": 200}
-    
+
