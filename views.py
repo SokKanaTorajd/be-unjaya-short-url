@@ -1,9 +1,9 @@
+import db
 from datetime import *
-from main import app
-from models import User,User_UPDATE
+from config import app
+from db import User,User_UPDATE,Login,Handle
 from fastapi import Depends, HTTPException, Cookie, Response, Request
 from passlib.hash import sha256_crypt
-from controls import Handle
 import jwt
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 

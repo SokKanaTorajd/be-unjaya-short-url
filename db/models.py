@@ -1,4 +1,3 @@
-import email
 from pydantic import BaseModel
 from datetime import *
 
@@ -20,4 +19,8 @@ class URL_UPDATE(BaseModel):
 
 class User_UPDATE(BaseModel):
     email : str
+    
+class Login(BaseModel):
+    username : str
+    password : str 
     

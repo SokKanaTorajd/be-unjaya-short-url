@@ -1,5 +1,4 @@
 from typing import List
-from views import app
 from datetime import *
 import sqlalchemy
 import databases
@@ -40,4 +39,3 @@ url_update= sqlalchemy.Table(
 )
  
 engine = sqlalchemy.create_engine( DATABASE_URL)
-metadata.create_all(engine)
