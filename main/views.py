@@ -1,9 +1,9 @@
 from datetime import *
-from main import app
-from models import User
+from config import app
+from db.models import User
 from fastapi import Depends, HTTPException, Cookie, Response, Request
 from passlib.hash import sha256_crypt
-from controls import Handle
+from db.controls import Handle
 import jwt
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
@@ -36,17 +36,20 @@ async def get_current_user(token: str = Depends(oauth)):
     return verify_token(token, credentials_exception)
 
 @app.post("/reg")
-async def epep(usr:User=Depends()):
-    db=Handle()
-    hashing=sha256_crypt.hash(usr.password)
-    if db.check(usr.email) is not None:
-        raise HTTPException(status_code =400,detail="Email sudah digunakan")
-    data=(usr.username,usr.email,hashing,usr.position_job)
-    db.reg(data)
-    return {"message":"Kamu berhasil mendaftar", "status":200}
+async def register(usr:User=Depends()):
+    try:
+        db=Handle()
+        hashing=sha256_crypt.hash(usr.password)
+        if db.check(usr.email) is not None:
+            raise HTTPException(status_code =400,detail="Email sudah digunakan")
+        data=(usr.username,usr.email,hashing,usr.position_job)
+        db.reg(data)
+        return {"message":"Kamu berhasil mendaftar", "status":200}
+    except:
+        return {"message": "Lengkapi form terlebih dahulu", "status": 500}
 
 @app.post("/token")
-async def local(response:Response, request: OAuth2PasswordRequestForm = Depends()):
+async def login(response:Response, request: OAuth2PasswordRequestForm = Depends()):
     response.set_cookie(key='u-login', value=request.username)
     db=Handle()
     check=db.login(request.username)
