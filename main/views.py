@@ -3,26 +3,8 @@ from config import app
 from db import User, check_email, Handle
 from fastapi import Depends, HTTPException, Cookie, Response, Request, UploadFile, File
 from passlib.hash import sha256_crypt
-import jwt
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-
-def create_access_token(data: dict):
-    file_copy = data.copy()
-    expire = datetime.now() + timedelta(minutes=25)
-    file_copy.update({'expire': expire.minute})
-    encode_jwt = jwt.encode(payload = file_copy, key='OkeToken124342@', algorithm='HS256')
-    return encode_jwt
-
-def verify_token(token: str, credential_exception):
-    try:
-        payload = jwt.decode(payload=token, key='OkeToken124342@', algorithm='HS256')
-        username: str = payload.get("sub")
-        if username is None:
-            raise credential_exception
-        else:
-            return {"message": "Auth berhasil"}
-    except Exception:
-        raise credential_exception
+from config import create_access_token, verify_token
     
 oauth = OAuth2PasswordBearer(tokenUrl='token')
     
