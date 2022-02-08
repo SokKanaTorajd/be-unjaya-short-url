@@ -21,7 +21,7 @@ class Handle:
         global db,cursor
         self.connect()
         cursor.execute(
-            f"insert into user (username,email,password,position_job) values ('{data[0]}','{data[1]}','{data[2]}','{data[3]}')"
+            f"insert into user (username,email,password,position_job, foto_profil) values ('{data[0]}','{data[1]}','{data[2]}','{data[3]}', '{data[4]}')"
         )
         db.commit()
         self.close()
@@ -41,3 +41,13 @@ class Handle:
             f"select * from user where username='{username}'"
         )
         return cursor.fetchone()
+
+    def insert_url(self, data):
+        global db, cursor 
+        self.connect()
+        cursor.execute(
+            """
+                INSERT INTO
+            """
+        )
+        db.commit()

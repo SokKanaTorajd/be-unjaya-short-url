@@ -1,5 +1,7 @@
+from MySQLdb import Binary
 import sqlalchemy
 import databases
+from sqlalchemy.dialects.mysql import MEDIUMBLOB
 
 DATABASE_URL = 'mysql+mysqlconnector://root:@localhost/db_dsc'
 
@@ -15,7 +17,8 @@ register = sqlalchemy.Table(
     sqlalchemy.Column("username", sqlalchemy.String(100)),
     sqlalchemy.Column("email", sqlalchemy.String(255), unique=True),
     sqlalchemy.Column("password", sqlalchemy.String(255), unique=True),
-    sqlalchemy.Column("position_job", sqlalchemy.String(100))
+    sqlalchemy.Column("position_job", sqlalchemy.String(100)),
+    sqlalchemy.Column("foto_profil", sqlalchemy.BLOB, nullable=True)
 )
 url = sqlalchemy.Table(
     "url",

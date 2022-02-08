@@ -1,9 +1,8 @@
 from datetime import *
 from config import app
-from db.models import User
-from fastapi import Depends, HTTPException, Cookie, Response, Request
+from db import User, check_email, Handle
+from fastapi import Depends, HTTPException, Cookie, Response, Request, UploadFile, File
 from passlib.hash import sha256_crypt
-from db.controls import Handle
 import jwt
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
@@ -36,17 +35,17 @@ async def get_current_user(token: str = Depends(oauth)):
     return verify_token(token, credentials_exception)
 
 @app.post("/reg")
-async def register(usr:User=Depends()):
+async def register(usr:User=Depends(), file: UploadFile = File(...)):
     try:
         db=Handle()
         hashing=sha256_crypt.hash(usr.password)
         if db.check(usr.email) is not None:
             raise HTTPException(status_code =400,detail="Email sudah digunakan")
-        data=(usr.username,usr.email,hashing,usr.position_job)
+        data=(usr.username,usr.email,hashing,usr.position_job, file)
         db.reg(data)
         return {"message":"Kamu berhasil mendaftar", "status":200}
     except:
-        return {"message": "Lengkapi form terlebih dahulu", "status": 500}
+        raise HTTPException(status_code=500,detail="Lengkapi form terlebih")
 
 @app.post("/token")
 async def login(response:Response, request: OAuth2PasswordRequestForm = Depends()):
@@ -62,7 +61,24 @@ async def login(response:Response, request: OAuth2PasswordRequestForm = Depends(
         raise HTTPException(status_code=400,detail="Password salah")
 
 @app.post("/getuser")
-async def getuser(response:Response, request: Request):
-    response.set_cookie(key='u-update', value=request.email)
-    return {"message":"cookie disimpan", "status": 200}
+async def getuser(response:Response, request: Request, usr: check_email=Depends()):
+    db = Handle()
+    obj = db.check(usr.email)
+    if obj is None:
+        raise HTTPException(status_code=400,detail="Email kamu belum terdaftar")
+    else:
+        response.set_cookie(key='u-update', value=usr.email)
+        return {"message":"cookie disimpan", "status": 200}
+
+@app.post('/logout-update')
+def logout(response:Response):
+    response.delete_cookie(key='u-update')
+    return {'status': 200, 'message': 'Cookie dihapus'}
+
+@app.post('/logout-user')
+def logout(response:Response):
+    response.delete_cookie(key='username')
+    return {'status': 200, 'message': 'Cookie dihapus'}
+
+
     

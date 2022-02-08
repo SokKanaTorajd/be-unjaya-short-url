@@ -1,3 +1,4 @@
+from typing import Optional
 from pydantic import BaseModel
 from datetime import *
 
@@ -6,6 +7,9 @@ class User(BaseModel):
     username : str
     password : str
     position_job : str
+
+class check_email(BaseModel):
+    email: str
 
 class URL(BaseModel):
     url_before : str
